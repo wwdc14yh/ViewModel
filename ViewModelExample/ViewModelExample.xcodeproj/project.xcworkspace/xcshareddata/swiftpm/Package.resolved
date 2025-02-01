@@ -1,0 +1,24 @@
+{
+  "originHash" : "c5563ee38cbf1d102ec24b45e543d770d15511b42282f14e459548fc4dac58e5",
+  "pins" : [
+    {
+      "identity" : "observableobjectextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wwdc14yh/ObservableObjectExtensions.git",
+      "state" : {
+        "revision" : "383dc6b8b62a147ac12961835eabe2a63d24c69c",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "uicomponent",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lkzhao/UIComponent",
+      "state" : {
+        "revision" : "06863bc50b072865ca4db102ed9fec10e5cb3f55",
+        "version" : "4.1.4"
+      }
+    }
+  ],
+  "version" : 3
+}

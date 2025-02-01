@@ -1,0 +1,15 @@
+{
+  "originHash" : "a3173ba977b780723dad62dd1366f1f38aad16837b58cd43cc610c6859eb37d0",
+  "pins" : [
+    {
+      "identity" : "observableobjectextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wwdc14yh/ObservableObjectExtensions.git",
+      "state" : {
+        "revision" : "383dc6b8b62a147ac12961835eabe2a63d24c69c",
+        "version" : "0.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}
