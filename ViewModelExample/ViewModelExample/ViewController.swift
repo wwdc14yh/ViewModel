@@ -11,25 +11,28 @@ import UIComponent
 
 class ViewController: UIViewController, ViewModelUpdateView {
     @ViewModelObservable
-    var viewModel: CounterViewModel
+    var viewModel = CounterViewModel()
 
     @ViewModelObservable
-    var viewModel2: ViewModel = .init()
+    var viewModel2 = ViewModel()
 
     let hostingView = UIScrollView()
 
     var component: some Component {
         VStack(justifyContent: .center, alignItems: .center) {
-            HStack(spacing: 10, justifyContent: .center, alignItems: .center) {
+            HStack(spacing: 10, justifyContent: .center, alignItems: .stretch) {
                 Image(systemName: "minus")
-                    .tintColor(.systemBlue)
+                    .contentMode(.scaleAspectFit)
+                    .size(width: .aspectPercentage(1))
                     .tappableView { [unowned self] in
                         viewModel.decrement()
                     }
                 Text("Counter: \(viewModel.state.count)",
                      font: viewModel.state.isDefaultCount ? .systemFont(ofSize: 17, weight: .bold) : .systemFont(ofSize: 17))
-                .id(viewModel.state.isDefaultCount ? "defalut.count.text" : "count.text")
+                    .id(viewModel.state.isDefaultCount ? "defalut.count.text" : "count.text")
                 Image(systemName: "plus")
+                    .contentMode(.scaleAspectFit)
+                    .size(width: .aspectPercentage(1))
                     .tappableView { [unowned self] in
                         viewModel.increment()
                     }
@@ -65,16 +68,6 @@ class ViewController: UIViewController, ViewModelUpdateView {
         }
     }
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        viewModel = .init()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        viewModel = .init()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -108,7 +101,7 @@ extension ViewController {
 
         @Published
         var state = State()
-        
+
         deinit {
             print("deinit \(self)")
         }

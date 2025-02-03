@@ -1,5 +1,5 @@
 {
-  "originHash" : "c5563ee38cbf1d102ec24b45e543d770d15511b42282f14e459548fc4dac58e5",
+  "originHash" : "3d6fc924bd8114933358f69be655a28b8844d39da0beeef14ae3dcaaa099fa0d",
   "pins" : [
     {
       "identity" : "observableobjectextensions",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "06863bc50b072865ca4db102ed9fec10e5cb3f55",
         "version" : "4.1.4"
+      }
+    },
+    {
+      "identity" : "uicomponentextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wwdc14yh/UIComponentExtensions.git",
+      "state" : {
+        "revision" : "2a64bdcad176fca2c5db05dc0c6d3b6ea75f2973",
+        "version" : "0.0.2"
       }
     }
   ],
