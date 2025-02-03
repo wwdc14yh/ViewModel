@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 import ViewModel
 import UIComponent
 
@@ -15,6 +16,9 @@ class ViewController: UIViewController, ViewModelUpdateView {
 
     @ViewModelObservable
     var viewModel2 = ViewModel()
+
+    @ViewModelObservable
+    var countdownViewModel = CountdownViewModel()
 
     let hostingView = UIScrollView()
 
@@ -64,6 +68,42 @@ class ViewController: UIViewController, ViewModelUpdateView {
                 }
             if !viewModel2.state.text.isEmpty {
                 Text(viewModel2.state.text)
+            }
+            Space(height: 20)
+            Text("Countdown seconds: \(countdownViewModel.state.seconds)")
+            VStack(spacing: 10, alignItems: .center) {
+                Text("Start Countdonw")
+                    .textColor(countdownViewModel.state.isCountdownFinished ? .systemBlue : .secondaryLabel)
+                    .if(countdownViewModel.state.isCountdownFinished) {
+                        $0
+                            .tappableView { [unowned self] in
+                                countdownViewModel.startCountdown(from: 3)
+                            }
+                    }
+                Text("Stop Countdonw")
+                    .textColor(countdownViewModel.state.isCountdowning ? .systemBlue : .secondaryLabel)
+                    .if(countdownViewModel.state.isCountdowning) {
+                        $0
+                            .tappableView { [unowned self] in
+                                countdownViewModel.stopCountdown()
+                            }
+                    }
+                Text("Pause Countdonw")
+                    .textColor(countdownViewModel.state.isCountdowning ? .systemBlue : .secondaryLabel)
+                    .if(countdownViewModel.state.isCountdowning) {
+                        $0
+                            .tappableView { [unowned self] in
+                                countdownViewModel.pauseCountdown()
+                            }
+                    }
+                Text("Resume Countdonw")
+                    .textColor(countdownViewModel.state.runningState == .paused ? .systemBlue : .secondaryLabel)
+                    .if(countdownViewModel.state.runningState == .paused) {
+                        $0
+                            .tappableView { [unowned self] in
+                                countdownViewModel.resumeCountdown()
+                            }
+                    }
             }
         }
     }
@@ -135,5 +175,68 @@ class CounterViewModel: ViewModelType {
 
     func reset() {
         state.count = state.defalutCount
+    }
+}
+
+class CountdownViewModel: ViewModelType {
+    struct State: Equatable {
+        var seconds: Int = 0
+        var runningState: RunningState = .stopped
+
+        var isCountdownFinished: Bool { seconds == 0 && runningState == .stopped }
+        var isCountdowning: Bool { seconds != 0 && runningState == .started }
+    }
+    
+    enum RunningState: Equatable {
+        case started
+        case stopped
+        case paused
+    }
+
+    @Published
+    private(set) var state = State()
+
+    private lazy var timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
+    private var timerCancellable: Cancellable?
+
+    deinit {
+        stopCountdown()
+        print("deinit \(self)")
+    }
+
+    func startCountdown(from seconds: Int) {
+        guard seconds > 0 else { return }
+        state.seconds = seconds
+        let nowDate = Date()
+        timerCancellable = timer
+            .map {
+                seconds - Int($0.timeIntervalSince(nowDate))
+            }
+            .sink(receiveValue: { [weak self] seconds in
+                guard seconds > 0 else {
+                    self?.stopCountdown()
+                    return
+                }
+                self?.state.seconds = seconds
+            })
+        state.runningState = .started
+    }
+
+    func stopCountdown() {
+        state.seconds = 0
+        timerCancellable?.cancel()
+        timerCancellable = nil
+        state.runningState = .stopped
+    }
+
+    func pauseCountdown() {
+        timerCancellable?.cancel()
+        state.runningState = .paused
+    }
+
+    func resumeCountdown() {
+        guard state.seconds > 0, state.runningState == .paused else { return }
+        startCountdown(from: state.seconds)
+        state.runningState = .started
     }
 }
